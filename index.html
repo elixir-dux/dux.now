@@ -1,0 +1,1029 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dux — Distributed DuckDB-native DataFrames for Elixir</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0c0b0a;
+        --bg-elevated: #161514;
+        --bg-code: #1a1918;
+        --text: #e8e4de;
+        --text-muted: #9b9588;
+        --text-dim: #6b665e;
+        --accent: #d4845a;
+        --accent-glow: #d4845a40;
+        --elixir: #9b7fc9;
+        --duck: #e6c84c;
+        --beam: #5eb88a;
+        --sql: #6ba3d6;
+        --border: #2a2724;
+        --border-light: #3a3632;
+        --mono: "Fira Code", monospace;
+        --serif: "Source Serif 4", Georgia, serif;
+        --sans: "DM Sans", system-ui, sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        line-height: 1.65;
+        overflow-x: hidden;
+      }
+
+      /* --- LAYOUT --- */
+      .page {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      /* --- TOP BAR --- */
+      .topbar {
+        padding: 1.5rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+      }
+
+      .topbar-name {
+        font-family: var(--mono);
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--accent);
+        letter-spacing: -0.02em;
+      }
+
+      .topbar-version {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        color: var(--text-dim);
+      }
+
+      .topbar-links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+      }
+
+      .topbar-links a {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+
+      .topbar-links a:hover {
+        color: var(--text);
+      }
+
+      /* --- OPENING --- */
+      .opening {
+        padding: 4rem 0 3rem;
+      }
+
+      .opening-tagline {
+        font-family: var(--serif);
+        font-size: 1.6rem;
+        font-weight: 300;
+        color: var(--text);
+        line-height: 1.4;
+        max-width: 600px;
+        letter-spacing: -0.01em;
+      }
+
+      .opening-tagline strong {
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .opening-sub {
+        margin-top: 1.25rem;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        max-width: 560px;
+        line-height: 1.7;
+      }
+
+      .install-block {
+        margin-top: 2rem;
+        background: var(--bg-code);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1rem 1.25rem;
+        font-family: var(--mono);
+        font-size: 0.85rem;
+        display: inline-block;
+        position: relative;
+      }
+
+      .install-block .comment {
+        color: var(--text-dim);
+      }
+      .install-block .key {
+        color: var(--elixir);
+      }
+      .install-block .str {
+        color: var(--beam);
+      }
+
+      /* --- CODE SECTIONS --- */
+      .code-section {
+        padding: 3rem 0;
+        border-top: 1px solid var(--border);
+      }
+
+      .code-section-label {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 0.5rem;
+      }
+
+      .code-section-title {
+        font-family: var(--serif);
+        font-size: 1.3rem;
+        font-weight: 400;
+        color: var(--text);
+        margin-bottom: 0.6rem;
+      }
+
+      .code-section-desc {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        max-width: 560px;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+      }
+
+      /* --- CODE BLOCKS --- */
+      pre {
+        background: var(--bg-code);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1.25rem 1.5rem;
+        overflow-x: auto;
+        font-family: var(--mono);
+        font-size: 0.82rem;
+        line-height: 1.75;
+        tab-size: 2;
+      }
+
+      pre + pre {
+        margin-top: 0.75rem;
+      }
+
+      .lang-tag {
+        display: inline-block;
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 2px 8px;
+        border-radius: 3px;
+        margin-bottom: 0.5rem;
+      }
+
+      .lang-elixir {
+        background: #9b7fc920;
+        color: var(--elixir);
+      }
+      .lang-sql {
+        background: #6ba3d620;
+        color: var(--sql);
+      }
+      .lang-shell {
+        background: #5eb88a20;
+        color: var(--beam);
+      }
+
+      /* syntax colouring */
+      .k {
+        color: var(--elixir);
+      } /* keyword */
+      .f {
+        color: var(--sql);
+      } /* function */
+      .s {
+        color: var(--beam);
+      } /* string */
+      .n {
+        color: var(--duck);
+      } /* number */
+      .c {
+        color: var(--text-dim);
+      } /* comment */
+      .o {
+        color: var(--text-muted);
+      } /* operator */
+      .a {
+        color: var(--accent);
+      } /* atom/symbol */
+      .m {
+        color: #e8e4de;
+      } /* module */
+      .p {
+        color: var(--text-muted);
+      } /* punctuation */
+
+      /* --- DUAL PANE: code left, explanation right --- */
+      .dual-pane {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+      }
+
+      .dual-pane pre {
+        margin: 0;
+      }
+
+      .dual-explain {
+        padding-top: 0.5rem;
+      }
+
+      .dual-explain p {
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        line-height: 1.7;
+        margin-bottom: 0.75rem;
+      }
+
+      .dual-explain p strong {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      /* --- ARROW ANNOTATION --- */
+      .arrow-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        margin-top: 0.5rem;
+      }
+
+      .arrow-note::before {
+        content: "→";
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      /* --- COMPILE BLOCK: show elixir→sql --- */
+      .compile-block {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 0;
+        align-items: center;
+      }
+
+      .compile-arrow {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 1rem;
+        color: var(--text-dim);
+        font-family: var(--mono);
+        font-size: 0.7rem;
+      }
+
+      .compile-arrow svg {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 0.25rem;
+      }
+
+      .compile-arrow svg path {
+        stroke: var(--text-dim);
+      }
+
+      /* --- ARCHITECTURE --- */
+      .arch-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .arch-cell {
+        background: var(--bg-elevated);
+        padding: 1.25rem;
+      }
+
+      .arch-cell-label {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 0.4rem;
+      }
+
+      .arch-cell-label.api {
+        color: var(--accent);
+      }
+      .arch-cell-label.engine {
+        color: var(--duck);
+      }
+      .arch-cell-label.runtime {
+        color: var(--beam);
+      }
+      .arch-cell-label.graph {
+        color: var(--elixir);
+      }
+      .arch-cell-label.dist {
+        color: var(--sql);
+      }
+
+      .arch-cell-title {
+        font-family: var(--serif);
+        font-size: 1rem;
+        color: var(--text);
+        margin-bottom: 0.35rem;
+      }
+
+      .arch-cell-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        line-height: 1.55;
+      }
+
+      /* --- VERB TABLE --- */
+      .verb-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+      }
+
+      .verb-table th {
+        text-align: left;
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .verb-table td {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+
+      .verb-table td:first-child {
+        font-family: var(--mono);
+        color: var(--accent);
+        white-space: nowrap;
+        font-size: 0.8rem;
+      }
+
+      .verb-table td:nth-child(2) {
+        color: var(--text-muted);
+      }
+
+      .verb-table td:nth-child(3) {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        color: var(--text-dim);
+      }
+
+      /* --- DISTRIBUTION SECTION --- */
+      .insight-callout {
+        border-left: 2px solid var(--accent);
+        padding: 1rem 1.25rem;
+        margin: 1.5rem 0;
+        background: var(--bg-elevated);
+        border-radius: 0 6px 6px 0;
+      }
+
+      .insight-callout p {
+        font-family: var(--serif);
+        font-size: 0.95rem;
+        font-style: italic;
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+
+      /* --- FOOTER --- */
+      .footer {
+        padding: 2.5rem 0;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .footer-left {
+        font-size: 0.82rem;
+        color: var(--text-dim);
+      }
+
+      .footer-left a {
+        color: var(--text-muted);
+        text-decoration: none;
+      }
+
+      .footer-left a:hover {
+        color: var(--text);
+      }
+
+      .footer-right {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        color: var(--text-dim);
+      }
+
+      /* --- RESPONSIVE --- */
+      @media (max-width: 720px) {
+        .dual-pane {
+          grid-template-columns: 1fr;
+        }
+        .compile-block {
+          grid-template-columns: 1fr;
+        }
+        .compile-arrow {
+          flex-direction: row;
+          padding: 0.75rem 0;
+          gap: 0.5rem;
+        }
+        .compile-arrow svg {
+          transform: rotate(90deg);
+        }
+        .arch-grid {
+          grid-template-columns: 1fr;
+        }
+        .opening-tagline {
+          font-size: 1.35rem;
+        }
+        .topbar-links {
+          gap: 1rem;
+        }
+      }
+
+      /* --- subtle grain --- */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        pointer-events: none;
+        z-index: 9999;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- TOP BAR -->
+      <nav class="topbar">
+        <div class="topbar-left">
+          <span class="topbar-name">dux</span>
+          <span class="topbar-version">v0.1.2-dev</span>
+        </div>
+        <ul class="topbar-links">
+          <li><a href="https://hexdocs.pm/dux">docs</a></li>
+          <li><a href="https://github.com/elixir-dux/dux">github</a></li>
+          <li>
+            <a href="https://github.com/elixir-dux/dux/blob/main/CHANGELOG.md"
+              >changelog</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://github.com/elixir-dux/dux/blob/main/guides/getting-started.livemd"
+              >guides</a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <!-- OPENING -->
+      <section class="opening">
+        <h1 class="opening-tagline">
+          <strong>Distributed</strong> DuckDB-native DataFrames for Elixir.<br />
+          Pipelines compile to SQL. The BEAM handles the rest.
+        </h1>
+        <p class="opening-sub">
+          Lazy pipelines compile to SQL CTEs. DuckDB handles the compute. The
+          BEAM handles distribution. Graph analytics, cross-source joins, Nx
+          interop — one library, one engine, fully exposed.
+        </p>
+        <div class="install-block">
+          <span class="comment"># mix.exs</span><br />
+          {<span class="key">:dux</span>, github:
+          <span class="str">"elixir-dux/dux"</span>}
+        </div>
+      </section>
+
+      <!-- SECTION: PIPE -->
+      <section class="code-section">
+        <div class="code-section-label">the api</div>
+        <h2 class="code-section-title">Verbs that pipe</h2>
+        <p class="code-section-desc">
+          Every operation is a function on <code>%Dux{}</code>. Filter, mutate,
+          group, summarise, join — they all return a new struct. Nothing hits
+          DuckDB until you call <code>compute/1</code>.
+        </p>
+
+        <div class="dual-pane">
+          <div>
+            <div class="lang-tag lang-elixir">elixir</div>
+            <pre><span class="k">require</span> <span class="m">Dux</span>
+
+<span class="m">Dux</span>.from_parquet(<span class="s">"s3://data/sales/**/*.parquet"</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">filter</span>(amount <span class="o">&gt;</span> <span class="n">100</span> <span class="k">and</span> region <span class="o">==</span> <span class="o">^</span>selected_region)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">mutate</span>(<span class="a">revenue:</span> price <span class="o">*</span> quantity)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">group_by</span>(<span class="a">:product</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">summarise</span>(<span class="a">total:</span> <span class="f">sum</span>(revenue), <span class="a">orders:</span> <span class="f">count</span>(product))
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">sort_by</span>(<span class="a">desc:</span> <span class="a">:total</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">to_parquet</span>(<span class="s">"results.parquet"</span>, <span class="a">compression:</span> <span class="a">:zstd</span>)</pre>
+          </div>
+          <div class="dual-explain">
+            <p>
+              <strong>Bare identifiers are columns.</strong>
+              <code>amount</code>, <code>region</code>, <code>price</code> — the
+              Query macro captures the expression as AST.
+            </p>
+            <p>
+              <strong><code>^</code> is interpolation.</strong> Elixir values
+              become parameter bindings (<code>$1</code>, <code>$2</code>). SQL
+              injection safe by construction.
+            </p>
+            <p>
+              <strong>DuckDB reads S3 directly.</strong>
+              <code>httpfs</code> extension, no ExAws, no Req. Parquet glob
+              expansion is native.
+            </p>
+            <p>
+              <strong>Everything is lazy</strong> until
+              <code>to_parquet/2</code> triggers <code>compute/1</code>. The
+              full pipeline compiles to a single SQL query with CTEs.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: COMPILATION -->
+      <section class="code-section">
+        <div class="code-section-label">under the hood</div>
+        <h2 class="code-section-title">Elixir expressions compile to SQL</h2>
+        <p class="code-section-desc">
+          Each verb becomes a CTE. The pipeline is a chain. DuckDB handles all
+          pushdown optimisation.
+        </p>
+
+        <div class="compile-block">
+          <div>
+            <div class="lang-tag lang-elixir">elixir</div>
+            <pre><span class="m">Dux</span>.from_parquet(<span class="s">"sales.parquet"</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">filter</span>(year <span class="o">&gt;</span> <span class="n">2024</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">mutate</span>(<span class="a">revenue:</span> price <span class="o">*</span> quantity)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">group_by</span>(<span class="a">:region</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">summarise</span>(<span class="a">total:</span> <span class="f">sum</span>(revenue))
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">compute</span>()</pre>
+          </div>
+          <div class="compile-arrow">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path
+                d="M8 16H24M24 16L18 10M24 16L18 22"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            compiles to
+          </div>
+          <div>
+            <div class="lang-tag lang-sql">sql</div>
+            <pre><span class="k">WITH</span> __s0 <span class="k">AS</span> (
+  <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="f">read_parquet</span>(<span class="s">'sales.parquet'</span>)
+  <span class="k">WHERE</span> year <span class="o">&gt;</span> <span class="n">2024</span>
+),
+__s1 <span class="k">AS</span> (
+  <span class="k">SELECT</span> <span class="o">*</span>, (price <span class="o">*</span> quantity) <span class="k">AS</span> revenue
+  <span class="k">FROM</span> __s0
+),
+__s2 <span class="k">AS</span> (
+  <span class="k">SELECT</span> region, <span class="f">SUM</span>(revenue) <span class="k">AS</span> total
+  <span class="k">FROM</span> __s1 <span class="k">GROUP BY</span> region
+)
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> __s2</pre>
+          </div>
+        </div>
+
+        <div class="arrow-note" style="margin-top: 1rem">
+          No LazySeries intermediate. Query macro → AST traversal → SQL. One
+          step.
+        </div>
+      </section>
+
+      <!-- SECTION: LINEAGE -->
+      <section class="code-section">
+        <div class="code-section-label">lineage</div>
+        <h2 class="code-section-title">From the creator of Explorer</h2>
+        <p class="code-section-desc">
+          Dux is the spiritual successor to
+          <a
+            href="https://github.com/elixir-explorer/explorer"
+            style="
+              color: var(--accent);
+              text-decoration: none;
+              border-bottom: 1px solid var(--accent) 40;
+            "
+            >Explorer</a
+          >, Elixir's original dataframe library. It's a clean-sheet design
+          built around a single insight: DuckDB is the engine, SQL is the
+          compilation target, and the BEAM is the distributed runtime.
+          Everything else follows from that.
+        </p>
+      </section>
+
+      <!-- SECTION: DISTRIBUTION -->
+      <section class="code-section">
+        <div class="code-section-label">distribution</div>
+        <h2 class="code-section-title">
+          DuckDB per node. BEAM for everything else.
+        </h2>
+
+        <div class="insight-callout">
+          <p>
+            Spark proved that DataFrames can be distributed. But Spark carries
+            the weight of the JVM — slow startup, heavy serialisation, complex
+            cluster management. The BEAM already has all of this, battle-tested
+            for 30+ years.
+          </p>
+        </div>
+
+        <div class="dual-pane">
+          <div>
+            <div class="lang-tag lang-elixir">elixir</div>
+            <pre><span class="c"># Workers auto-register via :pg</span>
+workers <span class="o">=</span> <span class="m">Dux.Remote.Worker</span>.<span class="f">list</span>()
+
+<span class="m">Dux</span>.from_parquet(<span class="s">"s3://lake/events/**/*.parquet"</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">distribute</span>(workers)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">filter</span>(amount <span class="o">&gt;</span> <span class="n">100</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">group_by</span>(<span class="a">:region</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">summarise</span>(<span class="a">total:</span> <span class="f">sum</span>(amount))
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">to_rows</span>()</pre>
+          </div>
+          <div class="dual-explain">
+            <p>
+              <strong>No function serialisation.</strong> <code>%Dux{}</code> is
+              plain data — an AST of operations. Ship it to any BEAM node,
+              compile to SQL there. The code is already deployed.
+            </p>
+            <p>
+              <strong>No cluster manager.</strong> <code>libcluster</code> +
+              <code>:pg</code>. Nodes discover each other, join process groups,
+              start working.
+            </p>
+            <p>
+              <strong>Arrow IPC over BEAM distribution.</strong> Same bytes in
+              memory and on wire. 6 bytes framing overhead. Backpressure, node
+              monitoring, fault tolerance — all for free.
+            </p>
+            <p>
+              <strong>Lattice-based streaming merge.</strong> SUM, COUNT, MIN,
+              MAX — partial results fold as workers complete. Progressive
+              results before the last worker finishes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: GRAPH -->
+      <section class="code-section">
+        <div class="code-section-label">graph analytics</div>
+        <h2 class="code-section-title">A graph is two dataframes</h2>
+        <p class="code-section-desc">
+          Vertices + edges. Every graph algorithm reduces to joins and
+          aggregations. PageRank is iterative join → group_by → sum → normalise.
+          Shortest path uses DuckDB's <code>USING KEY</code> recursive CTEs
+          (SIGMOD 2025).
+        </p>
+
+        <div class="lang-tag lang-elixir">elixir</div>
+        <pre>graph <span class="o">=</span> <span class="m">Dux.Graph</span>.<span class="f">new</span>(<span class="a">vertices:</span> users, <span class="a">edges:</span> follows)
+
+<span class="c"># Who is most influential?</span>
+graph
+<span class="o">|&gt;</span> <span class="m">Dux.Graph</span>.<span class="f">pagerank</span>(<span class="a">iterations:</span> <span class="n">20</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">sort_by</span>(<span class="a">desc:</span> <span class="a">:rank</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">head</span>(<span class="n">10</span>)
+
+<span class="c"># Shortest path via USING KEY recursive CTE</span>
+graph <span class="o">|&gt;</span> <span class="m">Dux.Graph</span>.<span class="f">shortest_paths</span>(start_node)
+
+<span class="c"># Connected components, triangle counting</span>
+graph <span class="o">|&gt;</span> <span class="m">Dux.Graph</span>.<span class="f">connected_components</span>()
+graph <span class="o">|&gt;</span> <span class="m">Dux.Graph</span>.<span class="f">triangle_count</span>()
+
+<span class="c"># Graph results are %Dux{} — pipe into any verb</span>
+graph
+<span class="o">|&gt;</span> <span class="m">Dux.Graph</span>.<span class="f">pagerank</span>()
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">join</span>(departments, <span class="a">on:</span> <span class="a">:id</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">group_by</span>(<span class="a">:dept</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">summarise</span>(<span class="a">avg_rank:</span> <span class="f">avg</span>(rank))
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">to_rows</span>()</pre>
+      </section>
+
+      <!-- SECTION: CROSS-SOURCE -->
+      <section class="code-section">
+        <div class="code-section-label">cross-source</div>
+        <h2 class="code-section-title">
+          Postgres + S3 + Parquet in one pipeline
+        </h2>
+        <p class="code-section-desc">
+          Attach databases, reference tables, join across sources. DuckDB pushes
+          filters down to remote databases. No ETL, no staging.
+        </p>
+
+        <div class="lang-tag lang-elixir">elixir</div>
+        <pre><span class="m">Dux</span>.<span class="f">attach</span>(<span class="a">:warehouse</span>, <span class="s">"postgresql://prod/analytics"</span>, <span class="a">type:</span> <span class="a">:postgres</span>)
+
+orders    <span class="o">=</span> <span class="m">Dux</span>.from_parquet(<span class="s">"s3://exports/orders/*.parquet"</span>)
+customers <span class="o">=</span> <span class="m">Dux</span>.from_attached(<span class="a">:warehouse</span>, <span class="s">"public.customers"</span>)
+
+orders
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">join</span>(customers, <span class="a">on:</span> <span class="a">:customer_id</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">filter</span>(order_date <span class="o">&gt;</span> <span class="o">~</span><span class="s">D[2026-01-01]</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">group_by</span>(<span class="a">:region</span>)
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">summarise</span>(<span class="a">revenue:</span> <span class="f">sum</span>(amount))
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">compute</span>()</pre>
+        <div class="arrow-note">
+          Postgres, MySQL, SQLite, Iceberg, Delta Lake, DuckLake — all via
+          DuckDB ATTACH.
+        </div>
+      </section>
+
+      <!-- SECTION: NX -->
+      <section class="code-section">
+        <div class="code-section-label">interop</div>
+        <h2 class="code-section-title">Nx tensors, zero-copy</h2>
+        <p class="code-section-desc">
+          DuckDB stores Arrow columnar data internally. After
+          <code>compute/1</code>, numeric columns become Nx tensors via pointer
+          passing. Dux implements <code>Nx.LazyContainer</code>.
+        </p>
+
+        <div class="lang-tag lang-elixir">elixir</div>
+        <pre>tensor <span class="o">=</span> <span class="m">Dux</span>.<span class="f">to_tensor</span>(df, <span class="a">:price</span>)
+<span class="c"># #Nx.Tensor&lt;f64[1000] [...]&gt;</span></pre>
+      </section>
+
+      <!-- SECTION: RAW SQL -->
+      <section class="code-section">
+        <div class="code-section-label">escape hatch</div>
+        <h2 class="code-section-title">When the macro doesn't cover it</h2>
+        <p class="code-section-desc">
+          The <code>_with</code> variants accept raw DuckDB SQL strings. Window
+          functions, CASE WHEN, PIVOT, arbitrary CTEs — anything DuckDB can do.
+        </p>
+
+        <div class="lang-tag lang-elixir">elixir</div>
+        <pre><span class="c"># Window functions</span>
+<span class="m">Dux</span>.<span class="f">mutate_with</span>(df, <span class="a">rank:</span> <span class="s">"ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC)"</span>)
+
+<span class="c"># Any DuckDB SQL</span>
+<span class="m">Dux</span>.<span class="f">from_query</span>(<span class="s">"PIVOT sales ON product USING SUM(amount) GROUP BY region"</span>)</pre>
+      </section>
+
+      <!-- SECTION: ARCHITECTURE GRID -->
+      <section class="code-section">
+        <div class="code-section-label">architecture</div>
+        <h2 class="code-section-title">What's in the box</h2>
+
+        <div class="arch-grid">
+          <div class="arch-cell">
+            <div class="arch-cell-label api">api</div>
+            <div class="arch-cell-title">Dux</div>
+            <div class="arch-cell-desc">
+              The module is the dataframe. All verbs live here.
+              <code>%Dux{}</code> is a source + ops list — plain Elixir data,
+              freely serialisable.
+            </div>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-label api">compiler</div>
+            <div class="arch-cell-title">Query → SQL</div>
+            <div class="arch-cell-desc">
+              Macro captures expressions as AST. Direct traversal to DuckDB SQL.
+              <code>^</code> interpolations become <code>$1</code>,
+              <code>$2</code> bindings.
+            </div>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-label engine">engine</div>
+            <div class="arch-cell-title">DuckDB via ADBC</div>
+            <div class="arch-cell-desc">
+              Pure Elixir ADBC wrapper. Zero Rust. Precompiled driver downloaded
+              at compile time. Arrow columnar storage.
+            </div>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-label dist">distribution</div>
+            <div class="arch-cell-title">Coordinator</div>
+            <div class="arch-cell-desc">
+              Partition, fan-out, merge. PipelineSplitter decomposes ops into
+              worker-safe + coordinator-only. Arrow IPC wire format.
+            </div>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-label runtime">runtime</div>
+            <div class="arch-cell-title">BEAM</div>
+            <div class="arch-cell-desc">
+              <code>:pg</code> for discovery. <code>:erpc</code> for fan-out.
+              Supervisor trees for fault tolerance. No JVM, no cluster manager.
+            </div>
+          </div>
+          <div class="arch-cell">
+            <div class="arch-cell-label graph">graph</div>
+            <div class="arch-cell-title">Dux.Graph</div>
+            <div class="arch-cell-desc">
+              PageRank, shortest paths, connected components, triangle counting.
+              Algorithms are verb compositions. Distributable.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: VERB TABLE -->
+      <section class="code-section">
+        <div class="code-section-label">reference</div>
+        <h2 class="code-section-title">Verbs</h2>
+
+        <table class="verb-table">
+          <thead>
+            <tr>
+              <th>Verb</th>
+              <th>What it does</th>
+              <th>SQL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>filter/2</td>
+              <td>Filter rows</td>
+              <td>WHERE</td>
+            </tr>
+            <tr>
+              <td>mutate/2</td>
+              <td>Add or replace columns</td>
+              <td>SELECT *, expr AS col</td>
+            </tr>
+            <tr>
+              <td>select/2</td>
+              <td>Keep columns</td>
+              <td>SELECT col1, col2</td>
+            </tr>
+            <tr>
+              <td>discard/2</td>
+              <td>Drop columns</td>
+              <td>SELECT * EXCLUDE</td>
+            </tr>
+            <tr>
+              <td>group_by/2</td>
+              <td>Group for aggregation</td>
+              <td>GROUP BY</td>
+            </tr>
+            <tr>
+              <td>summarise/2</td>
+              <td>Aggregate</td>
+              <td>SELECT agg() GROUP BY</td>
+            </tr>
+            <tr>
+              <td>sort_by/2</td>
+              <td>Sort rows</td>
+              <td>ORDER BY</td>
+            </tr>
+            <tr>
+              <td>join/3</td>
+              <td>Inner, left, right, cross, anti, semi</td>
+              <td>JOIN</td>
+            </tr>
+            <tr>
+              <td>head/2</td>
+              <td>First N rows</td>
+              <td>LIMIT</td>
+            </tr>
+            <tr>
+              <td>distinct/1</td>
+              <td>Deduplicate</td>
+              <td>DISTINCT</td>
+            </tr>
+            <tr>
+              <td>pivot_wider/4</td>
+              <td>Long → wide</td>
+              <td>PIVOT</td>
+            </tr>
+            <tr>
+              <td>pivot_longer/3</td>
+              <td>Wide → long</td>
+              <td>UNPIVOT</td>
+            </tr>
+            <tr>
+              <td>concat_rows/1</td>
+              <td>Combine dataframes</td>
+              <td>UNION ALL</td>
+            </tr>
+            <tr>
+              <td>window/3</td>
+              <td>Window functions</td>
+              <td>OVER (PARTITION BY ...)</td>
+            </tr>
+            <tr>
+              <td>compute/1</td>
+              <td>Execute the pipeline</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>to_rows/1</td>
+              <td>Execute, return list of maps</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>sql_preview/1</td>
+              <td>Show generated SQL</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- SECTION: IO -->
+      <section class="code-section">
+        <div class="code-section-label">io</div>
+        <h2 class="code-section-title">Read and write anything DuckDB can</h2>
+
+        <div class="lang-tag lang-elixir">elixir</div>
+        <pre><span class="c"># Read</span>
+<span class="m">Dux</span>.from_csv(<span class="s">"data.csv"</span>, <span class="a">delimiter:</span> <span class="s">"\t"</span>)
+<span class="m">Dux</span>.from_parquet(<span class="s">"data/**/*.parquet"</span>)
+<span class="m">Dux</span>.from_ndjson(<span class="s">"events.ndjson"</span>)
+<span class="m">Dux</span>.from_query(<span class="s">"SELECT * FROM read_parquet('s3://bucket/data.parquet')"</span>)
+
+<span class="c"># Write</span>
+<span class="m">Dux</span>.<span class="f">to_csv</span>(df, <span class="s">"output.csv"</span>)
+<span class="m">Dux</span>.<span class="f">to_parquet</span>(df, <span class="s">"output.parquet"</span>, <span class="a">compression:</span> <span class="a">:zstd</span>)
+<span class="m">Dux</span>.<span class="f">to_ndjson</span>(df, <span class="s">"output.ndjson"</span>)</pre>
+        <div class="arrow-note">
+          S3, HTTP, Postgres, MySQL, SQLite — all via DuckDB extensions. No
+          separate libraries.
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="footer">
+        <div class="footer-left">
+          Apache 2.0 + MIT &nbsp;·&nbsp;
+          <a href="https://github.com/elixir-dux/dux">elixir-dux/dux</a>
+          &nbsp;·&nbsp;
+          <a href="https://hexdocs.pm/dux">hexdocs</a>
+        </div>
+        <div class="footer-right">Elixir + DuckDB + BEAM</div>
+      </footer>
+    </div>
+  </body>
+</html>
