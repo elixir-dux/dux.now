@@ -4,25 +4,52 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dux: Distributed DuckDB-native DataFrames for Elixir</title>
-    <meta name="description" content="DuckDB-native dataframes for Elixir. Lazy pipelines compile to SQL CTEs. DuckDB handles the compute. The BEAM handles distribution." />
+    <meta
+      name="description"
+      content="DuckDB-native dataframes for Elixir. Lazy pipelines compile to SQL CTEs. DuckDB handles the compute. The BEAM handles distribution."
+    />
     <link rel="canonical" href="https://dux.now/" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Dux: Distributed DuckDB-native DataFrames for Elixir" />
-    <meta property="og:description" content="dplyr-style verb API backed by DuckDB. Lazy pipelines compile to SQL. Distributed execution across the BEAM. Graph analytics, cross-source joins, Nx interop." />
+    <meta
+      property="og:title"
+      content="Dux: Distributed DuckDB-native DataFrames for Elixir"
+    />
+    <meta
+      property="og:description"
+      content="dplyr-style verb API backed by DuckDB. Lazy pipelines compile to SQL. Distributed execution across the BEAM. Graph analytics, cross-source joins, Nx interop."
+    />
     <meta property="og:url" content="https://dux.now/" />
     <meta property="og:site_name" content="Dux" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Dux: Distributed DuckDB-native DataFrames for Elixir" />
-    <meta name="twitter:description" content="dplyr-style verb API backed by DuckDB. Lazy pipelines compile to SQL. Distributed execution across the BEAM." />
+    <meta
+      name="twitter:title"
+      content="Dux: Distributed DuckDB-native DataFrames for Elixir"
+    />
+    <meta
+      name="twitter:description"
+      content="dplyr-style verb API backed by DuckDB. Lazy pipelines compile to SQL. Distributed execution across the BEAM."
+    />
 
-    <script async src="https://plausible.io/js/pa-i2fK6kAKdyXVc4IlozXeD.js"></script>
+    <script
+      async
+      src="https://plausible.io/js/pa-i2fK6kAKdyXVc4IlozXeD.js"
+    ></script>
     <script>
-      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      plausible.init()
+      ((window.plausible =
+        window.plausible ||
+        function () {
+          (plausible.q = plausible.q || []).push(arguments);
+        }),
+        (plausible.init =
+          plausible.init ||
+          function (i) {
+            plausible.o = i || {};
+          }));
+      plausible.init();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -571,10 +598,7 @@
             >
           </li>
           <li>
-            <a
-              href="https://hexdocs.pm/dux/getting-started.html"
-              >guides</a
-            >
+            <a href="https://hexdocs.pm/dux/getting-started.html">guides</a>
           </li>
         </ul>
       </nav>
@@ -703,7 +727,7 @@ __s2 <span class="k">AS</span> (
       <section class="code-section">
         <div class="code-section-label">distribution</div>
         <h2 class="code-section-title">
-          DuckDB per node. BEAM for everything else.
+          DuckDB per node. The BEAM for everything else.
         </h2>
 
         <div class="insight-callout">
@@ -914,7 +938,12 @@ orders
         <div class="code-section-label">livebook</div>
         <h2 class="code-section-title">Rich rendering out of the box</h2>
         <p class="code-section-desc">
-          Add <a href="https://github.com/elixir-dux/kino_dux" style="color:var(--accent);text-decoration:none;">kino_dux</a>
+          Add
+          <a
+            href="https://github.com/elixir-dux/kino_dux"
+            style="color: var(--accent); text-decoration: none"
+            >kino_dux</a
+          >
           to your Livebook setup cell. Lazy pipelines render with source
           provenance, accumulated operations, and generated SQL. Computed
           results become interactive data tables.
@@ -926,8 +955,8 @@ orders
   {<span class="key">:kino_dux</span>, <span class="s">"~&gt; 0.1"</span>}
 ])</pre>
         <div class="arrow-note">
-          Smart cells for SQL preview, data source browsing, chart building,
-          and FLAME cluster configuration.
+          Smart cells for SQL preview, data source browsing, chart building, and
+          FLAME cluster configuration.
         </div>
       </section>
 
