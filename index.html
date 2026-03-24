@@ -382,47 +382,6 @@
         line-height: 1.55;
       }
 
-      /* --- VERB TABLE --- */
-      .verb-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.82rem;
-      }
-
-      .verb-table th {
-        text-align: left;
-        font-family: var(--mono);
-        font-size: 0.7rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--text-dim);
-        padding: 0.5rem 0.75rem;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .verb-table td {
-        padding: 0.5rem 0.75rem;
-        border-bottom: 1px solid var(--border);
-        vertical-align: top;
-      }
-
-      .verb-table td:first-child {
-        font-family: var(--mono);
-        color: var(--accent);
-        white-space: nowrap;
-        font-size: 0.8rem;
-      }
-
-      .verb-table td:nth-child(2) {
-        color: var(--text-muted);
-      }
-
-      .verb-table td:nth-child(3) {
-        font-family: var(--mono);
-        font-size: 0.75rem;
-        color: var(--text-dim);
-      }
-
       /* --- DISTRIBUTION SECTION --- */
       .insight-callout {
         border-left: 2px solid var(--accent);
@@ -473,28 +432,90 @@
 
       /* --- RESPONSIVE --- */
       @media (max-width: 720px) {
+        .page {
+          padding: 0 1rem;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.75rem;
+          padding: 1rem 0;
+        }
+
+        .topbar-links {
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .opening {
+          padding: 2.5rem 0 2rem;
+        }
+
+        .opening-tagline {
+          font-size: 1.3rem;
+        }
+
+        .opening-sub {
+          font-size: 0.88rem;
+        }
+
+        .code-section {
+          padding: 2rem 0;
+        }
+
+        .code-section-title {
+          font-size: 1.15rem;
+        }
+
         .dual-pane {
           grid-template-columns: 1fr;
         }
+
         .compile-block {
           grid-template-columns: 1fr;
         }
+
         .compile-arrow {
           flex-direction: row;
           padding: 0.75rem 0;
           gap: 0.5rem;
         }
+
         .compile-arrow svg {
           transform: rotate(90deg);
         }
+
         .arch-grid {
           grid-template-columns: 1fr;
         }
-        .opening-tagline {
-          font-size: 1.35rem;
+
+        pre {
+          padding: 1rem;
+          font-size: 0.72rem;
+          line-height: 1.6;
+          max-width: 100%;
+          white-space: pre-wrap;
+          word-break: break-all;
         }
-        .topbar-links {
-          gap: 1rem;
+
+        .install-block {
+          display: block;
+          font-size: 0.78rem;
+        }
+
+        .insight-callout {
+          padding: 0.75rem 1rem;
+        }
+
+        .insight-callout p {
+          font-size: 0.88rem;
+        }
+
+        .footer {
+          flex-direction: column;
+          gap: 0.5rem;
+          padding: 1.5rem 0;
         }
       }
 
@@ -519,7 +540,7 @@
       <nav class="topbar">
         <div class="topbar-left">
           <span class="topbar-name">dux</span>
-          <span class="topbar-version">v0.1.2-dev</span>
+          <span class="topbar-version">v0.2.0</span>
         </div>
         <ul class="topbar-links">
           <li><a href="https://hexdocs.pm/dux">docs</a></li>
@@ -531,7 +552,7 @@
           </li>
           <li>
             <a
-              href="https://github.com/elixir-dux/dux/blob/main/guides/getting-started.livemd"
+              href="https://hexdocs.pm/dux/getting-started.html"
               >guides</a
             >
           </li>
@@ -551,8 +572,8 @@
         </p>
         <div class="install-block">
           <span class="comment"># mix.exs</span><br />
-          {<span class="key">:dux</span>, github:
-          <span class="str">"elixir-dux/dux"</span>}
+          {<span class="key">:dux</span>,
+          <span class="str">"~&gt; 0.2.0"</span>}
         </div>
       </section>
 
@@ -685,7 +706,7 @@ workers <span class="o">=</span> <span class="m">Dux.Remote.Worker</span>.<span 
 <span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">filter</span>(amount <span class="o">&gt;</span> <span class="n">100</span>)
 <span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">group_by</span>(<span class="a">:region</span>)
 <span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">summarise</span>(<span class="a">total:</span> <span class="f">sum</span>(amount))
-<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">to_rows</span>()</pre>
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">compute</span>()</pre>
           </div>
           <div class="dual-explain">
             <p>
@@ -745,7 +766,7 @@ graph
 <span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">join</span>(departments, <span class="a">on:</span> <span class="a">:id</span>)
 <span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">group_by</span>(<span class="a">:dept</span>)
 <span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">summarise</span>(<span class="a">avg_rank:</span> <span class="f">avg</span>(rank))
-<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">to_rows</span>()</pre>
+<span class="o">|&gt;</span> <span class="m">Dux</span>.<span class="f">compute</span>()</pre>
       </section>
 
       <!-- SECTION: CROSS-SOURCE -->
@@ -868,109 +889,6 @@ orders
         </div>
       </section>
 
-      <!-- SECTION: VERB TABLE -->
-      <section class="code-section">
-        <div class="code-section-label">reference</div>
-        <h2 class="code-section-title">Verbs</h2>
-
-        <table class="verb-table">
-          <thead>
-            <tr>
-              <th>Verb</th>
-              <th>What it does</th>
-              <th>SQL</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>filter/2</td>
-              <td>Filter rows</td>
-              <td>WHERE</td>
-            </tr>
-            <tr>
-              <td>mutate/2</td>
-              <td>Add or replace columns</td>
-              <td>SELECT *, expr AS col</td>
-            </tr>
-            <tr>
-              <td>select/2</td>
-              <td>Keep columns</td>
-              <td>SELECT col1, col2</td>
-            </tr>
-            <tr>
-              <td>discard/2</td>
-              <td>Drop columns</td>
-              <td>SELECT * EXCLUDE</td>
-            </tr>
-            <tr>
-              <td>group_by/2</td>
-              <td>Group for aggregation</td>
-              <td>GROUP BY</td>
-            </tr>
-            <tr>
-              <td>summarise/2</td>
-              <td>Aggregate</td>
-              <td>SELECT agg() GROUP BY</td>
-            </tr>
-            <tr>
-              <td>sort_by/2</td>
-              <td>Sort rows</td>
-              <td>ORDER BY</td>
-            </tr>
-            <tr>
-              <td>join/3</td>
-              <td>Inner, left, right, cross, anti, semi</td>
-              <td>JOIN</td>
-            </tr>
-            <tr>
-              <td>head/2</td>
-              <td>First N rows</td>
-              <td>LIMIT</td>
-            </tr>
-            <tr>
-              <td>distinct/1</td>
-              <td>Deduplicate</td>
-              <td>DISTINCT</td>
-            </tr>
-            <tr>
-              <td>pivot_wider/4</td>
-              <td>Long → wide</td>
-              <td>PIVOT</td>
-            </tr>
-            <tr>
-              <td>pivot_longer/3</td>
-              <td>Wide → long</td>
-              <td>UNPIVOT</td>
-            </tr>
-            <tr>
-              <td>concat_rows/1</td>
-              <td>Combine dataframes</td>
-              <td>UNION ALL</td>
-            </tr>
-            <tr>
-              <td>window/3</td>
-              <td>Window functions</td>
-              <td>OVER (PARTITION BY ...)</td>
-            </tr>
-            <tr>
-              <td>compute/1</td>
-              <td>Execute the pipeline</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td>to_rows/1</td>
-              <td>Execute, return list of maps</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td>sql_preview/1</td>
-              <td>Show generated SQL</td>
-              <td>—</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
       <!-- SECTION: IO -->
       <section class="code-section">
         <div class="code-section-label">io</div>
@@ -981,15 +899,18 @@ orders
 <span class="m">Dux</span>.from_csv(<span class="s">"data.csv"</span>, <span class="a">delimiter:</span> <span class="s">"\t"</span>)
 <span class="m">Dux</span>.from_parquet(<span class="s">"data/**/*.parquet"</span>)
 <span class="m">Dux</span>.from_ndjson(<span class="s">"events.ndjson"</span>)
+<span class="m">Dux</span>.from_excel(<span class="s">"sales.xlsx"</span>, <span class="a">sheet:</span> <span class="s">"Q1"</span>)
 <span class="m">Dux</span>.from_query(<span class="s">"SELECT * FROM read_parquet('s3://bucket/data.parquet')"</span>)
 
 <span class="c"># Write</span>
 <span class="m">Dux</span>.<span class="f">to_csv</span>(df, <span class="s">"output.csv"</span>)
-<span class="m">Dux</span>.<span class="f">to_parquet</span>(df, <span class="s">"output.parquet"</span>, <span class="a">compression:</span> <span class="a">:zstd</span>)
-<span class="m">Dux</span>.<span class="f">to_ndjson</span>(df, <span class="s">"output.ndjson"</span>)</pre>
+<span class="m">Dux</span>.<span class="f">to_parquet</span>(df, <span class="s">"output.parquet"</span>, <span class="a">partition_by:</span> [<span class="a">:year</span>, <span class="a">:month</span>])
+<span class="m">Dux</span>.<span class="f">to_excel</span>(df, <span class="s">"report.xlsx"</span>)
+<span class="m">Dux</span>.<span class="f">to_ndjson</span>(df, <span class="s">"output.ndjson"</span>)
+<span class="m">Dux</span>.<span class="f">insert_into</span>(df, <span class="s">"pg.public.events"</span>, <span class="a">create:</span> <span class="k">true</span>)</pre>
         <div class="arrow-note">
-          S3, HTTP, Postgres, MySQL, SQLite — all via DuckDB extensions. No
-          separate libraries.
+          S3, HTTP, Postgres, MySQL, SQLite, Excel, DuckLake — all via DuckDB
+          extensions. No separate libraries.
         </div>
       </section>
 
