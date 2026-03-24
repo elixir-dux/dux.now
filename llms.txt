@@ -1,0 +1,53 @@
+# Dux
+
+> Distributed DuckDB-native DataFrames for Elixir
+
+Dux is an Elixir library that provides a dplyr-style verb API backed by DuckDB's analytical engine, with built-in distributed execution across the BEAM.
+
+## Key facts
+
+- Lazy by default: operations accumulate as an AST, compiled to SQL CTEs on materialization
+- DuckDB is the only engine: no pluggable backends, full access to DuckDB's SQL functions and 50+ extensions
+- The module IS the dataframe: `Dux.filter(df, ...)` not `Dux.DataFrame.filter(df, ...)`
+- Distributed on the BEAM: `%Dux{}` is plain data — ship it to any BEAM node, compile to SQL there
+- No Series API: all operations are dataframe-level
+
+## Links
+
+- Documentation: https://hexdocs.pm/dux
+- Hex package: https://hex.pm/packages/dux
+- Source code: https://github.com/elixir-dux/dux
+- Getting started guide: https://hexdocs.pm/dux/getting-started.html
+- Livebook integrations: https://github.com/elixir-dux/kino_dux
+
+## Installation
+
+```elixir
+def deps do
+  [{:dux, "~> 0.2.0"}]
+end
+```
+
+## Core API (verbs)
+
+- `Dux.from_parquet/2`, `Dux.from_csv/2`, `Dux.from_excel/2`, `Dux.from_ndjson/2` — read data
+- `Dux.from_query/1` — raw SQL source
+- `Dux.from_attached/3` — read from attached databases (Postgres, MySQL, SQLite, etc.)
+- `Dux.filter/2` — filter rows (WHERE)
+- `Dux.mutate/2` — add or replace columns
+- `Dux.select/2` — keep columns
+- `Dux.discard/2` — drop columns
+- `Dux.group_by/2` — group for aggregation
+- `Dux.summarise/2` — aggregate (GROUP BY)
+- `Dux.sort_by/2` — sort rows (ORDER BY)
+- `Dux.join/3` — inner, left, right, cross, anti, semi joins
+- `Dux.asof_join/3` — time-series nearest-match join
+- `Dux.head/2` — first N rows (LIMIT)
+- `Dux.distinct/1` — deduplicate
+- `Dux.pivot_wider/4`, `Dux.pivot_longer/3` — reshape
+- `Dux.window/3` — window functions
+- `Dux.distribute/2` — mark for distributed execution
+- `Dux.compute/1` — execute the pipeline
+- `Dux.to_rows/1` — execute and return list of maps
+- `Dux.to_parquet/3`, `Dux.to_csv/3`, `Dux.to_excel/2` — write data
+- `Dux.insert_into/3` — write to database table
