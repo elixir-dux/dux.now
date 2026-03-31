@@ -24,7 +24,7 @@ Dux is an Elixir library that provides a dplyr-style verb API backed by DuckDB's
 
 ```elixir
 def deps do
-  [{:dux, "~> 0.2.0"}]
+  [{:dux, "~> 0.3.0"}]
 end
 ```
 
